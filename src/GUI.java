@@ -5,35 +5,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GUI {
+    QuestionManager qm = new QuestionManager();
     JFrame frame = new JFrame("Cohooot");
     JPanel qCont = new JPanel();
     JPanel ansCont = new JPanel();
+    JButton start = new JButton("Start");
     JButton a1 = new JButton("1");
     JButton a2 = new JButton("2");
     JButton a3 = new JButton("3");
     Font bogus = new Font("Arial", Font.PLAIN, 32);
-    boolean run = true;
-    ArrayList<Question> qSet = new ArrayList<>();
+    int pos = 0;
+    int points = 0;
 
     public void initComponents() {
         frame.setSize(1920, 1080);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(3);
         frame.setVisible(true);
+        qm.parseFileToArray();
 
         repaint();
     }
 
     public void drawMenu() {
+        start.setBounds(frame.getWidth() / 4, frame.getHeight() / 3, frame.getWidth() / 2, frame.getHeight() / 3);
+        start.addActionListener(e -> {
+            play();
+        });
+        frame.add(start);
 
     }
 
-    public boolean play(String q, String an1, String an2, String an3, String a) {
+    public void play() {
+        if (qm.questions.get(pos) != null) {
+            Question q = qm.questions.get(pos);
+            System.out.println("question " + (pos + 1));
+            drawQuestion(q.q, q.a1, q.a2, q.a3, q.a);
+        } else {
+            drawResults();
+        }
+    }
+
+    //TODO: zjistit, proč se nevykresluje
+
+    public void drawQuestion(String q, String an1, String an2, String an3, String a) {
         AtomicReference<String> answer = new AtomicReference<>("");
         AtomicBoolean correct = new AtomicBoolean(false);
         frame.removeAll();
-        qCont.removeAll();
-        ansCont.removeAll();
         qCont.setBounds(0, 0, 1920, 780);
         qCont.setLayout(null);
         ansCont.setBounds(0, 780, 1920, 300);
@@ -45,14 +63,32 @@ public class GUI {
         a2.setFont(bogus);
         a3.setFont(bogus);
         a1.addActionListener(r -> {
-            answer.set(an1);
-            correct.set(checkAns(String.valueOf(answer), a));});
+            if (an1.equals(a)) {
+                points++;
+                play();
+            } else {
+                points --;
+                play();
+            }
+        });
         a2.addActionListener(r -> {
-            answer.set(an2);
-            correct.set(checkAns(String.valueOf(answer), a));});
+            if (an2.equals(a)) {
+                points++;
+                play();
+            } else {
+                points --;
+                play();
+            }
+        });
         a3.addActionListener(r -> {
-            answer.set(an3);
-            correct.set(checkAns(String.valueOf(answer), a));});
+            if (an3.equals(a)) {
+                points++;
+                play();
+            } else {
+                points --;
+                play();
+            }
+        });
 
         frame.add(qCont);
         frame.add(ansCont);
@@ -61,16 +97,15 @@ public class GUI {
         ansCont.add(a3);
 
         repaint();
-
-        return correct.get();
-    }
-
-    public boolean checkAns(String answer, String correct) {
-        return (answer.equals(correct));
     }
 
     public void drawResults() {
-
+        frame.removeAll();
+        JLabel jl = new JLabel();
+        jl.setBounds(frame.getWidth() / 4, frame.getHeight() / 3, frame.getWidth() / 2, frame.getHeight() / 3);
+        jl.setText("Skóre: " + points);
+        frame.add(jl);
+        frame.repaint();
     }
 
     private void repaint() {
