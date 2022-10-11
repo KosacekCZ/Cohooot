@@ -1,7 +1,17 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
 public class Main {
     public static void main(String[] args) {
+        QuestionManager qm = new QuestionManager();
         GUI g = new GUI();
         g.initComponents();
-        g.play();
+        qm.parseFileToArray();
+
+        g.drawMenu();
+
+
+
     }
 }

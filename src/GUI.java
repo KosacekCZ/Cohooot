@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GUI {
     JFrame frame = new JFrame("Cohooot");
@@ -26,7 +28,12 @@ public class GUI {
 
     }
 
-    public void play() {
+    public boolean play(String q, String an1, String an2, String an3, String a) {
+        AtomicReference<String> answer = new AtomicReference<>("");
+        AtomicBoolean correct = new AtomicBoolean(false);
+        frame.removeAll();
+        qCont.removeAll();
+        ansCont.removeAll();
         qCont.setBounds(0, 0, 1920, 780);
         qCont.setLayout(null);
         ansCont.setBounds(0, 780, 1920, 300);
@@ -37,9 +44,15 @@ public class GUI {
         a1.setFont(bogus);
         a2.setFont(bogus);
         a3.setFont(bogus);
-        a1.addActionListener(r -> {checkAns(1);});
-        a2.addActionListener(r -> {checkAns(2);});
-        a3.addActionListener(r -> {checkAns(3);});
+        a1.addActionListener(r -> {
+            answer.set(an1);
+            correct.set(checkAns(String.valueOf(answer), a));});
+        a2.addActionListener(r -> {
+            answer.set(an2);
+            correct.set(checkAns(String.valueOf(answer), a));});
+        a3.addActionListener(r -> {
+            answer.set(an3);
+            correct.set(checkAns(String.valueOf(answer), a));});
 
         frame.add(qCont);
         frame.add(ansCont);
@@ -49,9 +62,11 @@ public class GUI {
 
         repaint();
 
-        while(run) {
-            nextQ();
-        }
+        return correct.get();
+    }
+
+    public boolean checkAns(String answer, String correct) {
+        return (answer.equals(correct));
     }
 
     public void drawResults() {
@@ -62,11 +77,4 @@ public class GUI {
         frame.repaint();
     }
 
-    private void checkAns(int answered) {
-
-    }
-
-    private void nextQ() {
-
-    }
 }
