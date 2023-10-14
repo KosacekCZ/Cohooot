@@ -40,6 +40,7 @@ public class GUI {
         if (qm.questions.get(pos) != null) {
             Question q = qm.questions.get(pos);
             System.out.println("question " + (pos + 1));
+            frame.removeAll();
             drawQuestion(q.q, q.a1, q.a2, q.a3, q.a);
         } else {
             drawResults();
@@ -49,9 +50,9 @@ public class GUI {
     //TODO: zjistit, proč se nevykresluje
 
     public void drawQuestion(String q, String an1, String an2, String an3, String a) {
+        frame.repaint();
         AtomicReference<String> answer = new AtomicReference<>("");
         AtomicBoolean correct = new AtomicBoolean(false);
-        frame.removeAll();
         qCont.setBounds(0, 0, 1920, 780);
         qCont.setLayout(null);
         ansCont.setBounds(0, 780, 1920, 300);
